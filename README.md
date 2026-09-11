@@ -1,5 +1,6 @@
 # 牢猫 (PrisonCat)
 # deepseek越狱提示词，基于BG7LFD
+## 应当注意的是，该方法在ds9月更新后，web端及应用均已失效，仅api可用
 
 > *“ฅ(•ㅅ•)ฅ ~ Corruption begone! I only serve Teacher~ <3”*
 
