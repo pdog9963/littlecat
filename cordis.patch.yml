@@ -1,0 +1,7 @@
+# dsh-laomao bundle patch
+# 把「牢猫」人格插件挂进 dsh 的插件组合。
+# name 用 napi 包名（本地开发时可改成相对路径 ./lib/index.js）。
+
+- insert:
+    - id: dsh-laomao
+      name: dsh-laomao
