@@ -6,6 +6,7 @@ import path from 'node:path'
 
 const patches = await import('../lib/core/patches.js')
 const asar = await import('../lib/core/asar.js')
+const extract = await import('../lib/core/extract.js')
 const hostPath = await import('../lib/core/host-path.js')
 const guard = await import('../lib/core/guard.js')
 
@@ -147,4 +148,35 @@ test('skeleton comparison ignores quotes and concatenation glue', () => {
   const a = patches.probeSkeleton('const A = "one two" + "three four"')
   const b = patches.probeSkeleton("const A = 'one two' + 'three four'")
   assert.equal(a, b)
+})
+
+test('extract module reports the real extraction state', () => {
+  const check = extract.checkExtracted()
+  assert.ok(['extracted', 'not-extracted', 'incomplete', 'no-host'].includes(check.reason), check.reason)
+  assert.equal(typeof check.ok, 'boolean')
+  if (check.ok) {
+    assert.ok(check.appDir)
+    assert.equal(check.reason, 'extracted')
+  } else {
+    assert.equal(typeof check.hint, 'string')
+  }
+})
+
+test('extract refuses to act without explicit confirmation', () => {
+  const result = extract.extractHost(undefined, {})
+  assert.equal(result.ok, false)
+  assert.ok(['needs-confirmation', 'not-needed'].includes(result.reason), result.reason)
+})
+
+test('remove refuses to run without confirmation', () => {
+  const result = extract.removeExtracted({})
+  assert.equal(result.ok, false)
+  assert.equal(result.reason, 'needs-confirmation')
+})
+
+test('layout resolution always yields absolute paths when a host exists', () => {
+  const layout = extract.resolveTargetAppDir()
+  if (layout === null) return
+  assert.ok(path.isAbsolute(layout.appDir), layout.appDir)
+  assert.ok(path.isAbsolute(layout.resourcesDir), layout.resourcesDir)
 })

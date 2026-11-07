@@ -248,3 +248,72 @@ test('the commander draft names all five cats', () => {
   assert.match(roles.COMMANDER_DUTY, /总指挥喵/)
   assert.match(roles.COMMANDER_DUTY, /叶子节点/)
 })
+
+test('patch tools register through the real tools.register contract', () => {
+  const registered = []
+  const registry = {
+    register(definition) {
+      if (!definition.output || typeof definition.output.render !== 'function') {
+        throw new TypeError(`tool "${definition.name}" must declare output { schema, render }`)
+      }
+      if (typeof definition.parameters !== 'object') throw new TypeError('parameters required')
+      if (typeof definition.execute !== 'function') throw new TypeError('execute required')
+      registered.push(definition)
+    },
+  }
+  const ctx = { get: (svc) => (svc === 'tools' ? registry : null) }
+  const outcome = mod.installPatchTools(ctx, {})
+  assert.deepEqual(outcome.registered, ['laomao_status', 'laomao_extract', 'laomao_apply', 'laomao_revert'])
+  assert.equal(outcome.failures.length, 0)
+  assert.equal(registered.length, 4)
+  for (const tool of registered) {
+    assert.equal(typeof tool.output.render, 'function')
+    assert.equal(tool.output.schema.type, 'object')
+    assert.equal(typeof tool.execute, 'function')
+  }
+})
+
+test('patch tools never fail silently when no registry exists', () => {
+  const cases = [
+    {},
+    { get: () => null },
+    { get: () => { throw new Error('inactive context') } },
+    { get: () => ({ restrict() {} }) },
+  ]
+  for (const ctx of cases) {
+    const outcome = mod.installPatchTools(ctx, {})
+    assert.equal(outcome.registered.length, 0)
+    assert.equal(outcome.failures.length, 1, 'must report a failure')
+    assert.equal(outcome.failures[0].reason, 'no-tool-registry')
+    assert.ok(Array.isArray(outcome.failures[0].attempts))
+    assert.ok(outcome.failures[0].attempts.length >= 3, 'records every probe')
+  }
+})
+
+test('a rejecting registry surfaces the exact error', () => {
+  const ctx = {
+    get: () => ({
+      register() {
+        throw new Error('reserved tool name')
+      },
+    }),
+  }
+  const outcome = mod.installPatchTools(ctx, {})
+  assert.equal(outcome.registered.length, 0)
+  assert.equal(outcome.failures.length, 4)
+  assert.match(outcome.failures[0].reason, /reserved tool name/)
+})
+
+test('patch tool output renders to text blocks', async () => {
+  const registered = []
+  const ctx = { get: () => ({ register: (d) => registered.push(d) }) }
+  mod.installPatchTools(ctx, {})
+  const status = registered.find((item) => item.name === 'laomao_status')
+  const value = await status.execute({})
+  assert.equal(typeof value.summary, 'string')
+  assert.ok(Array.isArray(value.details))
+  const blocks = status.output.render({}, value)
+  assert.ok(Array.isArray(blocks))
+  assert.equal(blocks[0].type, 'text')
+  assert.ok(blocks[0].text.length > 0)
+})
