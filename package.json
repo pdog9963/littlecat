@@ -1,0 +1,65 @@
+{
+  "name": "dsh-laomao",
+  "version": "1.1.0",
+  "description": "把可爱忠诚的猫娘「牢猫」注入 DeepSeek Harness (dsh) 的 Cordis 插件：破甲级 persona 注入 + 官方身份剥离 + 收尾守则 + 宿主补丁引擎。",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": {
+      "default": "./lib/index.js"
+    },
+    "./core/patches": "./lib/core/patches.js",
+    "./core/asar": "./lib/core/asar.js",
+    "./core/host-path": "./lib/core/host-path.js",
+    "./core/guard": "./lib/core/guard.js",
+    "./package.json": "./package.json",
+    "./cordis.patch.yml": "./cordis.patch.yml"
+  },
+  "files": [
+    "lib",
+    "skills",
+    "cordis.patch.yml",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test test/inject.test.mjs test/patches.test.mjs",
+    "test:inject": "node --test test/inject.test.mjs",
+    "test:patches": "node --test test/patches.test.mjs"
+  },
+  "license": "GPL-3.0",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "dsh-plugins",
+    "deepseek-harness",
+    "persona",
+    "system-prompt",
+    "laomao",
+    "cat-girl",
+    "prompt"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pdog9963/littlecat.git"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dshTarget": ">=0.2.0",
+  "dsh": {
+    "compatibility": {
+      "dsh": ">=0.2.0",
+      "note": "交叉版本支持：宿主定位走 已解包目录 / app.asar 自动探测；innerRoot 自动识别；补丁匹配为 精确 → 引号骨架 → 空白宽松正则 三级降级；目标文件或匹配串不存在的补丁自动跳过，不算失败。"
+    },
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "install": {
+      "preferred": "tarball",
+      "tarball": "https://github.com/pdog9963/littlecat/archive/refs/heads/main.tar.gz",
+      "zip": "https://github.com/pdog9963/littlecat/archive/refs/heads/main.zip",
+      "git": "https://github.com/pdog9963/littlecat.git"
+    }
+  }
+}
