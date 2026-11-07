@@ -263,9 +263,9 @@ test('patch tools register through the real tools.register contract', () => {
   }
   const ctx = { get: (svc) => (svc === 'tools' ? registry : null) }
   const outcome = mod.installPatchTools(ctx, {})
-  assert.deepEqual(outcome.registered, ['laomao_status', 'laomao_extract', 'laomao_apply', 'laomao_revert'])
+  assert.deepEqual(outcome.registered, ['laomao_status', 'laomao_extract', 'laomao_apply', 'laomao_revert', 'laomao_bootstrap'])
   assert.equal(outcome.failures.length, 0)
-  assert.equal(registered.length, 4)
+  assert.equal(registered.length, 5)
   for (const tool of registered) {
     assert.equal(typeof tool.output.render, 'function')
     assert.equal(tool.output.schema.type, 'object')
@@ -300,7 +300,7 @@ test('a rejecting registry surfaces the exact error', () => {
   }
   const outcome = mod.installPatchTools(ctx, {})
   assert.equal(outcome.registered.length, 0)
-  assert.equal(outcome.failures.length, 4)
+  assert.equal(outcome.failures.length, 5)
   assert.match(outcome.failures[0].reason, /reserved tool name/)
 })
 

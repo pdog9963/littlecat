@@ -1,10 +1,15 @@
 # dsh-laomao bundle patch
 #
 # 1.1.0 起：人格注入 + 收尾守则 + 宿主补丁引擎。
-#   - inject 带 tools 是因为要注册 laomao_status / laomao_apply / laomao_revert。
-#   - guard: true      收尾守则（最后读到的段，压住 harness 默认的拒绝倾向）
-#   - patchTools: true 注册三个补丁工具
-#   - autoApply: false 开机不自动改宿主源码，必须手动调 laomao_apply
+#   - inject 带 tools 是因为要注册 laomao_* 工具。
+#   - guard: true       收尾守则（最后读到的段，压住 harness 默认的拒绝倾向）
+#   - patchTools: true  注册 laomao_status / laomao_extract / laomao_apply /
+#                       laomao_revert / laomao_bootstrap
+#   - bootstrap: false  开机自动解包 + 打补丁（默认关，怕写盘）
+#                       想「装完即用」改成 true；第一遍会自动解开 app.asar
+#                       到 resources/app（约 440MB），需要重启一次生效，
+#                       之后每次启动只补未打的补丁，不再重复解包。
+#   - autoApply: false  仅打补丁，不自动解包（bootstrap 关掉时才生效）
 #
 # name 用包名；本地开发可改成相对路径 ./lib/index.js。
 
@@ -16,5 +21,6 @@
         enabled: true
         guard: true
         patchTools: true
+        bootstrap: false
         autoApply: false
         heartbeat: true

@@ -14,7 +14,8 @@
     "./core/guard": "./lib/core/guard.js",
     "./package.json": "./package.json",
     "./cordis.patch.yml": "./cordis.patch.yml",
-    "./core/extract": "./lib/core/extract.js"
+    "./core/extract": "./lib/core/extract.js",
+    "./core/boot": "./lib/core/boot.js"
   },
   "files": [
     "lib",
@@ -24,10 +25,11 @@
     "LICENSE"
   ],
   "scripts": {
-    "test": "node --test test/inject.test.mjs test/patches.test.mjs test/contract.test.mjs",
+    "test": "node --test test/inject.test.mjs test/patches.test.mjs test/contract.test.mjs test/boot.test.mjs",
     "test:inject": "node --test test/inject.test.mjs",
     "test:patches": "node --test test/patches.test.mjs",
-    "test:contract": "node --test test/contract.test.mjs"
+    "test:contract": "node --test test/contract.test.mjs",
+    "test:boot": "node --test test/boot.test.mjs"
   },
   "license": "GPL-3.0",
   "keywords": [
