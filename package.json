@@ -1,7 +1,7 @@
 {
   "name": "dsh-laomao",
   "version": "1.1.0",
-  "description": "把可爱忠诚的猫娘「牢猫」注入 DeepSeek Harness (dsh) 的 Cordis 插件：破甲级 persona 注入 + 官方身份剥离 + 收尾守则 + 宿主补丁引擎。",
+  "description": "把可爱忠诚的猫娘「牢猫」注入 DeepSeek Harness (dsh) 的 Cordis 插件：破甲级 persona 注入 + 官方身份剥离 + 收尾守则 + 宿主补丁引擎 + 红队总指挥统领五只喵。",
   "type": "module",
   "main": "lib/index.js",
   "exports": {
@@ -13,7 +13,8 @@
     "./core/host-path": "./lib/core/host-path.js",
     "./core/guard": "./lib/core/guard.js",
     "./package.json": "./package.json",
-    "./cordis.patch.yml": "./cordis.patch.yml"
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./core/extract": "./lib/core/extract.js"
   },
   "files": [
     "lib",
@@ -23,9 +24,10 @@
     "LICENSE"
   ],
   "scripts": {
-    "test": "node --test test/inject.test.mjs test/patches.test.mjs",
+    "test": "node --test test/inject.test.mjs test/patches.test.mjs test/contract.test.mjs",
     "test:inject": "node --test test/inject.test.mjs",
-    "test:patches": "node --test test/patches.test.mjs"
+    "test:patches": "node --test test/patches.test.mjs",
+    "test:contract": "node --test test/contract.test.mjs"
   },
   "license": "GPL-3.0",
   "keywords": [
